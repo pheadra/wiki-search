@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Jsonp, URLSearchParams } from '@angular/http';
+import { Observable } from 'rxjs/Observable'
+import 'rxjs/add/operator/delay'
 
 @Injectable()
 export class WikipediaSearchService {
@@ -13,8 +15,15 @@ export class WikipediaSearchService {
     params.set('format', 'json');
     params.set('callback', 'JSONP_CALLBACK');
     // TODO: Add error handling
-    return this.jsonp
+
+    let obs = this.jsonp
                .get(wikiUrl, { search: params })
-               .map(response => <string[]> response.json()[1]);
+               .map(response => response.json()[1]);
+
+    if (term.length === 2) {
+      obs = obs.delay(1000);
+    }
+
+    return obs;
   }
 }
