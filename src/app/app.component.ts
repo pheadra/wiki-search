@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { WikipediaSearchService } from './wikipedia-search.service'
-
+import { Subject } from 'rxjs/Subject'
 import 'rxjs/add/operator/map'
 
 @Component({
@@ -10,12 +10,14 @@ import 'rxjs/add/operator/map'
   providers: [WikipediaSearchService]
 })
 export class AppComponent {
-  title = 'app works!';
+  term$ = new Subject<string>();
 
   items : Array<String>
-  constructor(private service:WikipediaSearchService) {}
+  constructor(private service:WikipediaSearchService) {
+    this.term$.subscribe(term => this.search(term));
+  }
 
   search(term:string) {
-	this.service.search(term).subscribe(results => this.items = results);
+	  this.service.search(term).subscribe(results => this.items = results);
   }
 }
