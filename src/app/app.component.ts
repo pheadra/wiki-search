@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { WikipediaSearchService } from './wikipedia-search.service'
 import { Subject } from 'rxjs/Subject'
 import 'rxjs/add/operator/map'
+import 'rxjs/add/operator/debounceTime'
+import 'rxjs/add/operator/distinctUntilChanged'
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,10 @@ export class AppComponent {
 
   items : Array<String>
   constructor(private service:WikipediaSearchService) {
-    this.term$.subscribe(term => this.search(term));
+    this.term$
+      .debounceTime(400)
+      .distinctUntilChanged()
+      .subscribe(term => this.search(term));
   }
 
   search(term:string) {
